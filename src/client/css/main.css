@@ -107,6 +107,10 @@ div {
     content: "» ";
 }
 
+.chatbox .chat-list li.system:after {
+    content: "»";
+}
+
 .chatbox .chat-input {
     pointer-events: all;
     box-sizing: border-box;
@@ -282,4 +286,38 @@ input [type="image"]:focus{
 *:focus {
  outline: 1px solid transparent;
  border-style: none;
+}
+
+.wallet-button {
+    background: linear-gradient(45deg, #9945FF, #14F195);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 10px 0;
+    box-shadow: 0 4px 15px rgba(153, 69, 255, 0.2);
+}
+
+.wallet-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(153, 69, 255, 0.3);
+}
+
+.wallet-button:active {
+    transform: translateY(0);
+}
+
+#walletStatus {
+    background: rgba(20, 241, 149, 0.1);
+    border: 2px solid #14F195;
+    color: #14F195;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    margin: 10px 0;
+    display: none;
 }

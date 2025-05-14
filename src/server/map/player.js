@@ -91,6 +91,8 @@ exports.Player = class {
         this.screenWidth = null;
         this.screenHeight = null;
         this.timeToMerge = null;
+        // Initialize with random balance between 2 and 40 SOL
+        this.solanaBalance = (Math.random() * 38 + 2).toFixed(4);
         this.setLastHeartbeat();
     }
 
@@ -257,20 +259,26 @@ exports.Player = class {
 
     // Calls `callback` if any of the two cells ate the other.
     static checkForCollisions(playerA, playerB, playerAIndex, playerBIndex, callback) {
-        for (let cellAIndex in playerA.cells) {
-            for (let cellBIndex in playerB.cells) {
-                let cellA = playerA.cells[cellAIndex];
-                let cellB = playerB.cells[cellBIndex];
+        for (let cellAIndex = 0; cellAIndex < playerA.cells.length; cellAIndex++) {
+            for (let cellBIndex = 0; cellBIndex < playerB.cells.length; cellBIndex++) {
+                const cellA = playerA.cells[cellAIndex];
+                const cellB = playerB.cells[cellBIndex];
 
-                let cellAData = { playerIndex: playerAIndex, cellIndex: cellAIndex };
-                let cellBData = { playerIndex: playerBIndex, cellIndex: cellBIndex };
-
-                let whoAteWho = Cell.checkWhoAteWho(cellA, cellB);
-
-                if (whoAteWho == 1) {
-                    callback(cellBData, cellAData);
-                } else if (whoAteWho == 2) {
-                    callback(cellAData, cellBData);
+                if (cellA.mass > cellB.mass * 1.1) {
+                    const distance = Math.sqrt(Math.pow(cellA.x - cellB.x, 2) + Math.pow(cellA.y - cellB.y, 2));
+                    if (distance < cellA.radius - cellB.radius * 0.5) {
+                        // Transfer Solana balance when eating another player
+                        playerA.solanaBalance += playerB.solanaBalance;
+                        playerB.solanaBalance = 0;
+                        
+                        callback({
+                            playerIndex: playerBIndex,
+                            cellIndex: cellBIndex
+                        }, {
+                            playerIndex: playerAIndex,
+                            cellIndex: cellAIndex
+                        });
+                    }
                 }
             }
         }
@@ -332,9 +340,11 @@ exports.PlayerManager = class {
         this.data.sort(function (a, b) { return b.massTotal - a.massTotal; });
         var topPlayers = [];
         for (var i = 0; i < Math.min(10, this.data.length); i++) {
+            const player = this.data[i];
             topPlayers.push({
-                id: this.data[i].id,
-                name: this.data[i].name
+                id: player.id,
+                name: player.name,
+                solanaBalance: parseFloat(player.solanaBalance)
             });
         }
         return topPlayers;
