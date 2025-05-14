@@ -31,18 +31,18 @@ function buildServer() {
     if (!process.env.IS_DEV) {
         task = task.pipe(babel())
     }
-    return task.pipe(gulp.dest('bin/server/'));
+    return task.pipe(gulp.dest('public/server/'));
 }
 
 function copyClientResources() {
     return gulp.src(['src/client/**/*.*', '!src/client/**/*.js'])
-        .pipe(gulp.dest('./bin/client/'));
+        .pipe(gulp.dest('./public/client/'));
 }
 
 function buildClientJS() {
     return gulp.src(['src/client/js/app.js'])
         .pipe(webpack(getWebpackConfig()))
-        .pipe(gulp.dest('bin/client/js/'));
+        .pipe(gulp.dest('public/client/js/'));
 }
 
 function setDev(done) {
